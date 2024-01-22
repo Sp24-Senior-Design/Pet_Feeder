@@ -32,6 +32,10 @@
 //#define CAMERA_MODEL_DFRobot_Romeo_ESP32S3 // Has PSRAM
 #include "camera_pins.h"
 
+// Includes for disabling brownout detector being triggered
+#include "soc/soc.h"
+#include "soc/rtc_cntl_reg.h"
+
 // ===========================
 // Enter your WiFi credentials
 // ===========================
@@ -41,7 +45,12 @@ const char* password = "glenpppp0";
 void startCameraServer();
 void setupLedFlash(int pin);
 
+#define LED_BUILTIN 33
+
 void setup() {
+  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); // Disable brownout detector being triggered
+  pinMode(LED_BUILTIN, OUTPUT); // Set the pin as output
+  digitalWrite(LED_BUILTIN, HIGH); // Turn off internal LED
   Serial.begin(115200);
   Serial.setDebugOutput(true);
   Serial.println();
@@ -147,6 +156,7 @@ void setup() {
   Serial.print("Camera Ready! Use 'http://");
   Serial.print(WiFi.localIP());
   Serial.println("' to connect");
+  digitalWrite(LED_BUILTIN, LOW); // Turn on internal LED when conneted to Wi-Fi
 }
 
 void loop() {
