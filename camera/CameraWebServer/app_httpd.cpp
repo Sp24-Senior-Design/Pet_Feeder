@@ -14,6 +14,7 @@
 #include "esp_http_server.h"
 #include "esp_timer.h"
 #include "esp_camera.h"
+#include <WiFi.h>
 #include "img_converters.h"
 #include "fb_gfx.h"
 #include "esp32-hal-ledc.h"
@@ -1359,6 +1360,8 @@ void startCameraServer()
     recognizer.set_ids_from_flash();
 #endif
     log_i("Starting web server on port: '%d'", config.server_port);
+    Serial.print("Starting web server on port:");
+    Serial.println(config.server_port);
     if (httpd_start(&camera_httpd, &config) == ESP_OK)
     {
         httpd_register_uri_handler(camera_httpd, &index_uri);
@@ -1377,6 +1380,8 @@ void startCameraServer()
     config.server_port += 1;
     config.ctrl_port += 1;
     log_i("Starting stream server on port: '%d'", config.server_port);
+    Serial.print("Starting stream server on port:");
+    Serial.println(config.server_port);
     if (httpd_start(&stream_httpd, &config) == ESP_OK)
     {
         httpd_register_uri_handler(stream_httpd, &stream_uri);
