@@ -384,7 +384,7 @@
     <body>
         <section class="main">
             <div id="logo">
-                <label for="nav-toggle-cb" id="nav-toggle">&#9776;&nbsp;&nbsp;Toggle OV2640 settings</label>
+                <label for="nav-toggle-cb" id="nav-toggle">&#9776;&nbsp;&nbsp;Smart Pet Feeder Menu</label>
             </div>
             <div id="content">
                 <div id="sidebar">
@@ -443,6 +443,7 @@
                             <input type="range" id="qualityGLEN" min="4" max="63" value="10" class="default-action">
                             <div class="range-max">63</div>
                         </div>
+                        <!---->
                         <div class="input-group" id="brightness-group">
                             <label for="brightness">Brightness</label>
                             <div class="range-min">-2</div>
@@ -473,6 +474,7 @@
                                 <option value="6">Sepia</option>
                             </select>
                         </div>
+                        <!---->
                         <div class="input-group" id="awb-group">
                             <label for="awb">AWB</label>
                             <div class="switch">
@@ -480,6 +482,7 @@
                                 <label class="slider" for="awb"></label>
                             </div>
                         </div>
+                        <!---->
                         <div class="input-group" id="awb_gain-group">
                             <label for="awb_gain">AWB Gain</label>
                             <div class="switch">
@@ -618,17 +621,22 @@
                                 <label class="slider" for="face_recognize"></label>
                             </div>
                         </div>
+                        <!---->
                         <section id="buttons">
-                            <button id="get-still">Get Still</button>
+                            <!-- <button id="get-still">Get Still</button> -->
                             <button id="toggle-stream">Start Stream</button>
-                            <button id="face_enroll" class="disabled" disabled="disabled">Enroll Face</button>
+                            <!-- <button id="face_enroll" class="disabled" disabled="disabled">Enroll Face</button> -->
                         </section>
 
+                        <!-- HOW TO MAKE NEW TITLE AND DROP DOWNS OR SAVING MULTIPLE THINGS AT A TIME -->
+                        <!---->
                         <div style="margin-top: 8px;"><center><span style="font-weight: bold;">Advanced Settings</span></center></div>
                         <hr style="width:100%">
                         <label for="nav-toggle-reg" class="toggle-section-label">&#9776;&nbsp;&nbsp;Register Get/Set</label><input type="checkbox" id="nav-toggle-reg" class="hidden toggle-section-button" checked="checked">
                         <section class="toggle-section">
+                        <!---->
                             <!--h4>Set Register</h4-->
+                            <!---->
                             <div class="input-group" id="set-reg-group">
                                 <label for="set-reg">Reg, Mask, Value</label>
                                 <div class="text">
@@ -643,7 +651,9 @@
                                 <button class="inline-button" id="set-reg">Set</button>
                             </div>
                             <hr style="width:50%">
+                            <!---->
                             <!--h4>Get Register</h4-->
+                            <!---->
                             <div class="input-group" id="get-reg-group">
                                 <label for="get-reg">Reg, Mask</label>
                                 <div class="text">
@@ -713,6 +723,7 @@
                             </div>
                             <button id="set-resolution">Set Resolution</button>
                         </section>
+                        <!---->
 
 
 

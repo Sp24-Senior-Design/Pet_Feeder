@@ -14,12 +14,12 @@
 #include "esp_http_server.h"
 #include "esp_timer.h"
 #include "esp_camera.h"
-#include <WiFi.h>
 #include "img_converters.h"
 #include "fb_gfx.h"
 #include "esp32-hal-ledc.h"
 #include "sdkconfig.h"
 #include "camera_index.h"
+#include "Arduino.h"
 
 #if defined(ARDUINO_ARCH_ESP32) && defined(CONFIG_ARDUHAL_ESP_LOG)
 #include "esp32-hal-log.h"
@@ -70,7 +70,8 @@
 #endif
 
 // Enable LED FLASH setting
-#define CONFIG_LED_ILLUMINATOR_ENABLED 1
+// #define CONFIG_LED_ILLUMINATOR_ENABLED 1 // ORIGINAL
+#define CONFIG_LED_ILLUMINATOR_ENABLED 0
 
 // LED FLASH setup
 #if CONFIG_LED_ILLUMINATOR_ENABLED
@@ -88,15 +89,6 @@ typedef struct
     httpd_req_t *req;
     size_t len;
 } jpg_chunking_t;
-
-// Glen's variable declarations
-const char *message = "this is a message from the web server";
-typedef struct Schedule {
-  int day = 0;
-  int hour = 0;
-  int minute = 0;
-} Schedule;
-Schedule sched;
 
 #define PART_BOUNDARY "123456789000000000000987654321"
 static const char *_STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
@@ -578,9 +570,9 @@ static esp_err_t stream_handler(httpd_req_t *req)
 
     while (true)
     {
-        // int i = 0;
-        // Serial.print("stream iteration: ");
-        // Serial.println(i);
+        int i = 0;
+        Serial.print("stream iteration: ");
+        Serial.println(i);
 #if CONFIG_ESP_FACE_DETECT_ENABLED
     #if ARDUHAL_LOG_LEVEL >= ARDUHAL_LOG_LEVEL_INFO
         detected = false;
@@ -739,21 +731,30 @@ static esp_err_t stream_handler(httpd_req_t *req)
             }
 #endif
         }
+        Serial.print("1: ");
+        Serial.println(res);
         if (res == ESP_OK)
         {
             res = httpd_resp_send_chunk(req, _STREAM_BOUNDARY, strlen(_STREAM_BOUNDARY));
         }
+        Serial.print("2: ");
+        Serial.println(res);
         if (res == ESP_OK)
         {
             size_t hlen = snprintf((char *)part_buf, 128, _STREAM_PART, _jpg_buf_len, _timestamp.tv_sec, _timestamp.tv_usec);
             res = httpd_resp_send_chunk(req, (const char *)part_buf, hlen);
         }
+        Serial.print("3: ");
+        Serial.println(res);
         if (res == ESP_OK)
         {
             res = httpd_resp_send_chunk(req, (const char *)_jpg_buf, _jpg_buf_len);
         }
+        Serial.print("4: ");
+        Serial.println(res);
         if (fb)
         {
+            Serial.println("got in fb");
             esp_camera_fb_return(fb);
             fb = NULL;
             _jpg_buf = NULL;
@@ -765,7 +766,7 @@ static esp_err_t stream_handler(httpd_req_t *req)
         }
         if (res != ESP_OK)
         {
-            // Serial.println("SEND FRAME FAILED FOR STREAMING");
+            Serial.println("SEND FRAME FAILED FOR STREAMING");
             log_e("Send frame failed");
             break;
         }
@@ -852,21 +853,13 @@ static esp_err_t cmd_handler(httpd_req_t *req)
     sensor_t *s = esp_camera_sensor_get();
     int res = 0;
 
-    // glen glen glen
     if (!strcmp(variable, "framesize")) {
         if (s->pixformat == PIXFORMAT_JPEG) {
             res = s->set_framesize(s, (framesize_t)val);
         }
     }
-    else if (!strcmp(variable, "qualityGLEN"))
-    {
+    else if (!strcmp(variable, "quality"))
         res = s->set_quality(s, val);
-        
-        pinMode(2, OUTPUT);
-        digitalWrite(2, HIGH); // Turn on external LED on GPIO4
-        delay(2000);
-        digitalWrite(2, LOW); // Turn off external LED on GPIO4
-    }
     else if (!strcmp(variable, "contrast"))
         res = s->set_contrast(s, val);
     else if (!strcmp(variable, "brightness"))
@@ -1058,62 +1051,14 @@ static esp_err_t xclk_handler(httpd_req_t *req)
     int xclk = atoi(_xclk);
     log_i("Set XCLK: %d MHz", xclk);
 
-    // Instead of setting the xclk, I will be using this input for how long to light an external LED
-    // sensor_t *s = esp_camera_sensor_get();
-    // int res = s->set_xclk(s, LEDC_TIMER_0, xclk);
-    // if (res) {
-    //     return httpd_resp_send_500(req);
-    // }
-    Serial.print("xclk value: ");
-    Serial.println(xclk);
-    // Flashes the LED xclk value times
-    pinMode(2, OUTPUT);
-    for (int i = 0; i < xclk; i++) {
-      digitalWrite(2, HIGH); // Turn on external LED on GPIO4
-      delay(500);
-      digitalWrite(2, LOW); // Turn off external LED on GPIO4
-      delay(500);
+    sensor_t *s = esp_camera_sensor_get();
+    int res = s->set_xclk(s, LEDC_TIMER_0, xclk);
+    if (res) {
+        return httpd_resp_send_500(req);
     }
-
-    httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
-    return httpd_resp_send(req, message, strlen(message));
-}
-
-// consider making this a "default action" in html
-static esp_err_t shour_handler(httpd_req_t *req) {
-    char *buf = NULL;
-    char _hour[32];
-
-    if (parse_get(req, &buf) != ESP_OK) {
-        return ESP_FAIL;
-    }
-    if (httpd_query_key_value(buf, "shour", _hour, sizeof(_hour)) != ESP_OK) {
-        free(buf);
-        httpd_resp_send_404(req);
-        return ESP_FAIL;
-    }
-    free(buf);
-
-    int hour = atoi(_hour);
-
-    sched.hour = hour;
-    
-    Serial.print("set sched.hour value: ");
-    Serial.println(sched.hour);
 
     httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
     return httpd_resp_send(req, NULL, 0);
-}
-
-static esp_err_t ghour_handler(httpd_req_t *req) {
-    Serial.print("existing sched.hour value: ");
-    Serial.println(sched.hour);
-
-    char hour[32];
-    itoa(sched.hour, hour, 10);
-
-    httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
-    return httpd_resp_send(req, hour, strlen(hour));
 }
 
 static esp_err_t reg_handler(httpd_req_t *req)
@@ -1253,7 +1198,6 @@ static esp_err_t win_handler(httpd_req_t *req)
     return httpd_resp_send(req, NULL, 0);
 }
 
-// This is where they convert the camera_index.h gibberish to HTML
 static esp_err_t index_handler(httpd_req_t *req)
 {
     httpd_resp_set_type(req, "text/html");
@@ -1369,20 +1313,6 @@ void startCameraServer()
 #endif
     };
 
-    httpd_uri_t shour_uri = {
-        .uri = "/shour",
-        .method = HTTP_GET,
-        .handler = shour_handler,
-        .user_ctx = NULL
-    };
-
-    httpd_uri_t ghour_uri = {
-    .uri = "/ghour",
-    .method = HTTP_GET,
-    .handler = ghour_handler,
-    .user_ctx = NULL
-    };
-
     httpd_uri_t reg_uri = {
         .uri = "/reg",
         .method = HTTP_GET,
@@ -1444,8 +1374,6 @@ void startCameraServer()
     recognizer.set_ids_from_flash();
 #endif
     log_i("Starting web server on port: '%d'", config.server_port);
-    Serial.print("Starting web server on port:");
-    Serial.println(config.server_port);
     if (httpd_start(&camera_httpd, &config) == ESP_OK)
     {
         httpd_register_uri_handler(camera_httpd, &index_uri);
@@ -1455,8 +1383,6 @@ void startCameraServer()
         httpd_register_uri_handler(camera_httpd, &bmp_uri);
 
         httpd_register_uri_handler(camera_httpd, &xclk_uri);
-        httpd_register_uri_handler(camera_httpd, &shour_uri); // new
-        httpd_register_uri_handler(camera_httpd, &ghour_uri); // new
         httpd_register_uri_handler(camera_httpd, &reg_uri);
         httpd_register_uri_handler(camera_httpd, &greg_uri);
         httpd_register_uri_handler(camera_httpd, &pll_uri);
@@ -1466,11 +1392,9 @@ void startCameraServer()
     config.server_port += 1;
     config.ctrl_port += 1;
     log_i("Starting stream server on port: '%d'", config.server_port);
-    Serial.print("Starting stream server on port:");
-    Serial.println(config.server_port);
     if (httpd_start(&stream_httpd, &config) == ESP_OK)
     {
-        httpd_register_uri_handler(stream_httpd, &stream_uri); // only the stream is on port 81, everything else is on port 80
+        httpd_register_uri_handler(stream_httpd, &stream_uri);
     }
 }
 
