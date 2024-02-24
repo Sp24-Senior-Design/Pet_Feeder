@@ -32,6 +32,7 @@
 // Makes no sense to have it enabled for them
 #if CONFIG_IDF_TARGET_ESP32S3
 #define CONFIG_ESP_FACE_RECOGNITION_ENABLED 1
+Serial.println("CONFIG_ESP_FACE_RECOGNITION_ENABLED is enabled");
 #else
 #define CONFIG_ESP_FACE_RECOGNITION_ENABLED 0
 #endif
@@ -369,6 +370,7 @@ static esp_err_t capture_handler(httpd_req_t *req)
     fb = esp_camera_fb_get();
 #endif
 
+    Serial.println(psramFound());
     if (!fb)
     {
         log_e("Camera capture failed");
@@ -583,6 +585,7 @@ static esp_err_t stream_handler(httpd_req_t *req)
         fb = esp_camera_fb_get();
         if (!fb)
         {
+            Serial.println("Camera capture failed");
             log_e("Camera capture failed");
             res = ESP_FAIL;
         }
@@ -608,6 +611,7 @@ static esp_err_t stream_handler(httpd_req_t *req)
                     fb = NULL;
                     if (!jpeg_converted)
                     {
+                        Serial.println("JPEG compression failed");
                         log_e("JPEG compression failed");
                         res = ESP_FAIL;
                     }
@@ -655,6 +659,7 @@ static esp_err_t stream_handler(httpd_req_t *req)
                     esp_camera_fb_return(fb);
                     fb = NULL;
                     if (!s) {
+                        Serial.println("fmt2jpg failed");
                         log_e("fmt2jpg failed");
                         res = ESP_FAIL;
                     }
@@ -668,6 +673,7 @@ static esp_err_t stream_handler(httpd_req_t *req)
                     out_height = fb->height;
                     out_buf = (uint8_t*)malloc(out_len);
                     if (!out_buf) {
+                        Serial.println("out_buf malloc failed");
                         log_e("out_buf malloc failed");
                         res = ESP_FAIL;
                     } else {
@@ -676,6 +682,7 @@ static esp_err_t stream_handler(httpd_req_t *req)
                         fb = NULL;
                         if (!s) {
                             free(out_buf);
+                            Serial.println("To rgb888 failed");
                             log_e("To rgb888 failed");
                             res = ESP_FAIL;
                         } else {
@@ -716,9 +723,12 @@ static esp_err_t stream_handler(httpd_req_t *req)
 #endif
                                 draw_face_boxes(&rfb, &results, face_id);
                             }
+                            Serial.print("0: ");
+                            Serial.println(res);
                             s = fmt2jpg(out_buf, out_len, out_width, out_height, PIXFORMAT_RGB888, 90, &_jpg_buf, &_jpg_buf_len);
                             free(out_buf);
                             if (!s) {
+                                Serial.print("fmt2jpg failed #2");
                                 log_e("fmt2jpg failed");
                                 res = ESP_FAIL;
                             }
