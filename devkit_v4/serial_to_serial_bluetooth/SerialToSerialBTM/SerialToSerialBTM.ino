@@ -79,17 +79,17 @@ void setup() {
 }
 
 void loop() {
+  SerialBT.write(65);
   // for transmitting data
   if (Serial.available()) {
     // SerialBT.write(Serial.read());
     // SerialBT.write(65);
-    
   }
   // for receiving data
   if (SerialBT.available()) {
     //Serial.write(SerialBT.read());
-    int message = SerialBT.read();
+    String message = SerialBT.readString();
     Serial.println(message);
   }
-  delay(20);
+  delay(5000); // 5 seconds
 }
