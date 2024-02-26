@@ -10,8 +10,8 @@
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
 
-#define USE_PIN // Uncomment this to use PIN during pairing. The pin is specified on the line below
-const char *pin = "1234"; // Change this to more secure PIN.
+// #define USE_PIN // Uncomment this to use PIN during pairing. The pin is specified on the line below
+// const char *pin = "1234"; // Change this to more secure PIN.
 
 String device_name = "ESP32-BT-Slave";
 
@@ -33,10 +33,10 @@ void setup() {
   SerialBT.begin(device_name); //Bluetooth device name
   Serial.printf("The device with name \"%s\" is started.\nNow you can pair it with Bluetooth!\n", device_name.c_str());
   //Serial.printf("The device with name \"%s\" and MAC address %s is started.\nNow you can pair it with Bluetooth!\n", device_name.c_str(), SerialBT.getMacString()); // Use this after the MAC method is implemented
-  #ifdef USE_PIN
-    SerialBT.setPin(pin);
-    Serial.println("Using PIN");
-  #endif
+  // #ifdef USE_PIN
+  //   SerialBT.setPin(pin);
+  //   Serial.println("Using PIN");
+  // #endif
 }
 
 void loop() {

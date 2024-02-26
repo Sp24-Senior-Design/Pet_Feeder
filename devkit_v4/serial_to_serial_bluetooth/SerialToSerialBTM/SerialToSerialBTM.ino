@@ -16,7 +16,7 @@
 #include "BluetoothSerial.h"
 
 #define USE_NAME // Comment this to use MAC address instead of a slaveName
-const char *pin = "1234"; // Change this to reflect the pin expected by the real slave BT device
+// const char *pin = "1234"; // Change this to reflect the pin expected by the real slave BT device
 
 #if !defined(CONFIG_BT_SPP_ENABLED)
 #error Serial Bluetooth not available or not enabled. It is only available for the ESP32 chip.
@@ -40,10 +40,10 @@ void setup() {
   SerialBT.begin(myName, true);
   Serial.printf("The device \"%s\" started in master mode, make sure slave BT device is on!\n", myName.c_str());
 
-  #ifndef USE_NAME
-    SerialBT.setPin(pin);
-    Serial.println("Using PIN");
-  #endif
+  // #ifndef USE_NAME
+  //   SerialBT.setPin(pin);
+  //   Serial.println("Using PIN");
+  // #endif
 
   // connect(address) is fast (up to 10 secs max), connect(slaveName) is slow (up to 30 secs max) as it needs
   // to resolve slaveName to address first, but it allows to connect to different devices with the same name.
