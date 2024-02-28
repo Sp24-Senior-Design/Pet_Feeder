@@ -58,7 +58,7 @@ void handleRoot() {
     </style>\
   </head>\
   <body>\
-    <h1>Hello from ESP32!</h1>\
+    <h1>Hello from ESP32-DevKitC V4!</h1>\
     <a href='http://172.20.10.8/'> link to live stream </a>\
     <p>Uptime: %02d:%02d:%02d</p>\
     <img src=\"/test.svg\" />\
@@ -115,7 +115,7 @@ void setup(void) {
   }
 
   server.on("/", handleRoot);
-  server.on("/test.svg", drawGraph);
+  // server.on("/test.svg", drawGraph); disable graph for now
   server.on("/inline", []() {
     server.send(200, "text/plain", "this works as well");
   });
