@@ -51,20 +51,22 @@ const char *password = "glenpppp0";
 
 WebServer server(80);
 
-const int led = 13;
+// const int led = 13;
 
+int month = -1;
+int day = -1;
 int hour = -1;
+int minute = -1;
 
 void handleRoot() {
-  digitalWrite(led, 1);
-  char temp[1200];
+  // digitalWrite(led, 1);
   int sec = millis() / 1000;
   int min = sec / 60;
   int hr = min / 60;
 
-  snprintf(temp, 1200,
-
-           "<html>\
+  int html_size = 1700;
+  char temp[html_size];
+  const char *html = "<html>\
   <head>\
     <meta http-equiv='refresh' content='5'/>\
     <title>ESP32 Demo</title>\
@@ -74,32 +76,77 @@ void handleRoot() {
     </style>\
   </head>\
   <body>\
-    <h1>Hello from ESP32-DevKitC V4!</h1>\
+    <h1>Pet Feeder Menu</h1>\
     <a href='http://172.20.10.8/'> Link to video stream! </a>\
     <p>Uptime: %02d:%02d:%02d</p>\
     <br><br>\
+    <form action=\"/getmonth\" method=\"get\">\
+      <label for=\"inputValue\">Enter month (1-12):</label>\
+      <input type=\"text\" id=\"inputValue\" name=\"value\">\
+      <input type=\"submit\" value=\"Submit\">\
+    </form>\
+    <form action=\"/getday\" method=\"get\">\
+      <label for=\"inputValue\">Enter day (1-31):</label>\
+      <input type=\"text\" id=\"inputValue\" name=\"value\">\
+      <input type=\"submit\" value=\"Submit\">\
+    </form>\
     <form action=\"/gethour\" method=\"get\">\
-      <label for=\"inputValue\">Enter hour:</label>\
+      <label for=\"inputValue\">Enter hour (0-23):</label>\
+      <input type=\"text\" id=\"inputValue\" name=\"value\">\
+      <input type=\"submit\" value=\"Submit\">\
+    </form>\
+    <form action=\"/getminute\" method=\"get\">\
+      <label for=\"inputValue\">Enter minute (0-59):</label>\
       <input type=\"text\" id=\"inputValue\" name=\"value\">\
       <input type=\"submit\" value=\"Submit\">\
     </form>\
     <br><br>\
     <h1>Schedule:</h1>\
+    <label>Month:</label>\
+    <textarea readonly id='displayValue' rows='1' cols='1'>%d</textarea>\
+    <label>Day:</label>\
+    <textarea readonly id='displayValue' rows='1' cols='1'>%d</textarea>\
     <label>Hour:</label>\
+    <textarea readonly id='displayValue' rows='1' cols='1'>%d</textarea>\
+    <label>Minute:</label>\
     <textarea readonly id='displayValue' rows='1' cols='1'>%d</textarea>\
     <br><br>\
   </body>\
-</html>",
+</html>";
 
-           hr, min % 60, sec % 60, hour);
+  // Serial.println(strlen(html));
+  snprintf(temp, html_size, html, hr, min % 60, sec % 60, month, day, hour, minute);
   server.send(200, "text/html", temp);
-  digitalWrite(led, 0);
+  // digitalWrite(led, 0);
+}
+
+void handleGetMonth() {
+  if (server.hasArg("value") && server.arg("value") != "") {
+    month = server.arg("value").toInt();
+    Serial.print("Received month value: ");
+    Serial.println(month);
+  }
+
+  // goes back to root web page
+  server.sendHeader("Location", "/", true);  // Set the "Location" header to root URL
+  server.send(302, "text/plain", "");        // Send a 302 Found status code for redirect
+}
+
+void handleGetDay() {
+  if (server.hasArg("value") && server.arg("value") != "") {
+    day = server.arg("value").toInt();
+    Serial.print("Received day value: ");
+    Serial.println(day);
+  }
+
+  // goes back to root web page
+  server.sendHeader("Location", "/", true);  // Set the "Location" header to root URL
+  server.send(302, "text/plain", "");        // Send a 302 Found status code for redirect
 }
 
 void handleGetHour() {
   if (server.hasArg("value") && server.arg("value") != "") {
-    int submittedValue = server.arg("value").toInt();
-    hour = submittedValue;
+    hour = server.arg("value").toInt();
     Serial.print("Received hour value: ");
     Serial.println(hour);
   }
@@ -110,8 +157,20 @@ void handleGetHour() {
   server.send(302, "text/plain", "");        // Send a 302 Found status code for redirect
 }
 
+void handleGetMinute() {
+  if (server.hasArg("value") && server.arg("value") != "") {
+    minute = server.arg("value").toInt();
+    Serial.print("Received minute value: ");
+    Serial.println(minute);
+  }
+
+  // goes back to root web page
+  server.sendHeader("Location", "/", true);  // Set the "Location" header to root URL
+  server.send(302, "text/plain", "");        // Send a 302 Found status code for redirect
+}
+
 void handleNotFound() {
-  digitalWrite(led, 1);
+  // digitalWrite(led, 1);
   String message = "File Not Found\n\n";
   message += "URI: ";
   message += server.uri();
@@ -126,12 +185,12 @@ void handleNotFound() {
   }
 
   server.send(404, "text/plain", message);
-  digitalWrite(led, 0);
+  // digitalWrite(led, 0);
 }
 
 void setup(void) {
-  pinMode(led, OUTPUT);
-  digitalWrite(led, 0);
+  // pinMode(led, OUTPUT);
+  // digitalWrite(led, 0);
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
@@ -155,8 +214,11 @@ void setup(void) {
 
   // initialize handlers
   server.on("/", handleRoot);
+  server.on("/getmonth", handleGetMonth);  // for get month
+  server.on("/getday", handleGetDay);  // for get day
   server.on("/gethour", handleGetHour);  // for get hour
-  // server.on("/test.svg", drawGraph); // disable graph for now
+  server.on("/getminute", handleGetMinute);  // for get minute
+  // server.on("/test.svg", drawGraph); // disable graph
   server.on("/inline", []() {
     server.send(200, "text/plain", "this works as well");
   });
