@@ -26,6 +26,19 @@
    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+   <script>\
+      function getValue() {\
+        var xhttp = new XMLHttpRequest();\
+        xhttp.onreadystatechange = function() {\
+          if (this.readyState == 4 && this.status == 200) {\
+            document.getElementById('displayValue').innerText = this.responseText;\
+          }\
+        };\
+        xhttp.open('GET', '/getvalue', true);\
+        xhttp.send();\
+      }\
+    </script>\
 */
 
 #include <WiFi.h>
@@ -40,14 +53,16 @@ WebServer server(80);
 
 const int led = 13;
 
+int hour = -1;
+
 void handleRoot() {
   digitalWrite(led, 1);
-  char temp[400];
+  char temp[1200];
   int sec = millis() / 1000;
   int min = sec / 60;
   int hr = min / 60;
 
-  snprintf(temp, 400,
+  snprintf(temp, 1200,
 
            "<html>\
   <head>\
@@ -55,20 +70,44 @@ void handleRoot() {
     <title>ESP32 Demo</title>\
     <style>\
       body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
+      textarea { resize: none; }\
     </style>\
   </head>\
   <body>\
     <h1>Hello from ESP32-DevKitC V4!</h1>\
-    <a href='http://172.20.10.8/'> link to live stream </a>\
+    <a href='http://172.20.10.8/'> Link to video stream! </a>\
     <p>Uptime: %02d:%02d:%02d</p>\
-    <img src=\"/test.svg\" />\
+    <br><br>\
+    <form action=\"/gethour\" method=\"get\">\
+      <label for=\"inputValue\">Enter hour:</label>\
+      <input type=\"text\" id=\"inputValue\" name=\"value\">\
+      <input type=\"submit\" value=\"Submit\">\
+    </form>\
+    <br><br>\
+    <h1>Schedule:</h1>\
+    <label>Hour:</label>\
+    <textarea readonly id='displayValue' rows='1' cols='1'>%d</textarea>\
+    <br><br>\
   </body>\
 </html>",
 
-           hr, min % 60, sec % 60
-          );
+           hr, min % 60, sec % 60, hour);
   server.send(200, "text/html", temp);
   digitalWrite(led, 0);
+}
+
+void handleGetHour() {
+  if (server.hasArg("value") && server.arg("value") != "") {
+    int submittedValue = server.arg("value").toInt();
+    hour = submittedValue;
+    Serial.print("Received hour value: ");
+    Serial.println(hour);
+  }
+  // server.send(200, "text/plain", "Submitted successfully");
+
+  // goes back to root web page
+  server.sendHeader("Location", "/", true);  // Set the "Location" header to root URL
+  server.send(302, "text/plain", "");        // Send a 302 Found status code for redirect
 }
 
 void handleNotFound() {
@@ -114,19 +153,22 @@ void setup(void) {
     Serial.println("MDNS responder started");
   }
 
+  // initialize handlers
   server.on("/", handleRoot);
-  // server.on("/test.svg", drawGraph); disable graph for now
+  server.on("/gethour", handleGetHour);  // for get hour
+  // server.on("/test.svg", drawGraph); // disable graph for now
   server.on("/inline", []() {
     server.send(200, "text/plain", "this works as well");
   });
   server.onNotFound(handleNotFound);
+
   server.begin();
   Serial.println("HTTP server started");
 }
 
 void loop(void) {
   server.handleClient();
-  delay(2);//allow the cpu to switch to other tasks
+  delay(2);  //allow the cpu to switch to other tasks
 }
 
 void drawGraph() {
