@@ -173,485 +173,364 @@ void handleRoot() {
   // int min = sec / 60;
   // int hr = min / 60;
 
-  int html_size = 3000 * 2;
-  char temp[html_size];
-  const char *html = "<html>\
-  <head>\
-    <title>ESP32 Demo</title>\
-    <style>\
-      body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
-      textarea { resize: none; }\
-      table { border-collapse: collapse; }\
-      table, th, td { border: 1px solid black; }\
-      th, td { padding: 10px; }\
-    </style>\
-  </head>\
-  <body>\
-    <h1>Pet Feeder Menu</h1>\
-    <a href='http://172.20.10.8/'> Link to video stream! </a>\
-    <br><br>\
-    <table>\
-      <tbody>\
-        <th></th>\
-        <th>SUN</th>\
-        <th>MON</th>\
-        <th>TUE</th>\
-        <th>WED</th>\
-        <th>THU</th>\
-        <th>FRI</th>\
-        <th>SAT</th>\
-        <tr>\
-          <td>9:00am</td>\
-          <td> <form action=\"check\" method=\"get\">\
-            <input type='hidden' name='id' value='00'>\
-            <input type='checkbox' %s onchange='this.form.submit()'>\
-          </form> </td>\
-          <td> <form action=\"check\" method=\"get\">\
-            <input type='hidden' name='id' value='01'>\
-            <input type='checkbox' %s onchange='this.form.submit()'>\
-          </form> </td>\
-          <td> <form action=\"check\" method=\"get\">\
-            <input type='hidden' name='id' value='02'>\
-            <input type='checkbox' %s onchange='this.form.submit()'>\
-          </form> </td>\
-          <td> <form action=\"check\" method=\"get\">\
-            <input type='hidden' name='id' value='03'>\
-            <input type='checkbox' %s onchange='this.form.submit()'>\
-          </form> </td>\
-          <td> <form action=\"check\" method=\"get\">\
-            <input type='hidden' name='id' value='04'>\
-            <input type='checkbox' %s onchange='this.form.submit()'>\
-          </form> </td>\
-          <td> <form action=\"check\" method=\"get\">\
-            <input type='hidden' name='id' value='05'>\
-            <input type='checkbox' %s onchange='this.form.submit()'>\
-          </form> </td>\
-          <td> <form action=\"check\" method=\"get\">\
-            <input type='hidden' name='id' value='06'>\
-            <input type='checkbox' %s onchange='this.form.submit()'>\
-          </form> </td>\
-        </tr>\
-        <tr>\
-          <td>10:00am</td>\
-          <td> <form action=\"check\" method=\"get\">\
-            <input type='hidden' name='id' value='10'>\
-            <input type='checkbox' %s onchange='this.form.submit()'>\
-          </form> </td>\
-          <td> <form action=\"check\" method=\"get\">\
-            <input type='hidden' name='id' value='11'>\
-            <input type='checkbox' %s onchange='this.form.submit()'>\
-          </form> </td>\
-          <td> <form action=\"check\" method=\"get\">\
-            <input type='hidden' name='id' value='12'>\
-            <input type='checkbox' %s onchange='this.form.submit()'>\
-          </form> </td>\
-          <td> <form action=\"check\" method=\"get\">\
-            <input type='hidden' name='id' value='13'>\
-            <input type='checkbox' %s onchange='this.form.submit()'>\
-          </form> </td>\
-          <td> <form action=\"check\" method=\"get\">\
-            <input type='hidden' name='id' value='14'>\
-            <input type='checkbox' %s onchange='this.form.submit()'>\
-          </form> </td>\
-          <td> <form action=\"check\" method=\"get\">\
-            <input type='hidden' name='id' value='15'>\
-            <input type='checkbox' %s onchange='this.form.submit()'>\
-          </form> </td>\
-          <td> <form action=\"check\" method=\"get\">\
-            <input type='hidden' name='id' value='16'>\
-            <input type='checkbox' %s onchange='this.form.submit()'>\
-          </form> </td>\
-        </tr>\
-      </tbody>\
-  </table>\
-  </body>\
-</html>";
+  int html_size = 2000 * 10;
+  char *temp = (char *) malloc(sizeof(*temp) * html_size);
+  const char *html = "\
+  <html>\
+    <head>\
+      <title>ESP32 Demo</title>\
+      <style>\
+        body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
+        textarea { resize: none; }\
+        table { border-collapse: collapse; }\
+        table, th, td { border: 1px solid black; }\
+        th, td { padding: 10px; }\
+      </style>\
+    </head>\
+    <body>\
+      <h1>Pet Feeder Menu</h1>\
+      <a href='http://172.20.10.8/'> Link to video stream! </a>\
+      <br><br>\
+      <table>\
+        <tbody>\
+          <th></th>\
+          <th>SUN</th>\
+          <th>MON</th>\
+          <th>TUE</th>\
+          <th>WED</th>\
+          <th>THU</th>\
+          <th>FRI</th>\
+          <th>SAT</th>\
+          <tr>\
+            <td>9:00am</td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='00'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='01'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='02'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='03'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='04'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='05'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='06'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+          </tr>\
+          <tr>\
+            <td>10:00am</td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='10'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='11'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='12'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='13'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='14'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='15'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='16'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+          </tr>\
+          <tr>\
+            <td>11:00am</td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='20'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='21'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='22'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='23'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='24'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='25'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='26'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+          </tr>\
+          <tr>\
+            <td>12:00pm</td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='30'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='31'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='32'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='33'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='34'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='35'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='36'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+          </tr>\
+          <tr>\
+            <td>1:00pm</td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='40'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='41'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='42'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='43'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='44'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='45'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='46'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+          </tr>\
+          <tr>\
+            <td>2:00pm</td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='50'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='51'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='52'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='53'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='54'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='55'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='56'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+          </tr>\
+          <tr>\
+            <td>3:00pm</td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='60'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='61'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='62'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='63'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='64'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='65'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='66'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+          </tr>\
+          <tr>\
+            <td>4:00pm</td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='70'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='71'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='72'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='73'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='74'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='75'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='76'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+          </tr>\
+          <tr>\
+            <td>5:00pm</td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='80'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='81'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='82'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='83'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='84'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='85'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='86'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+          </tr>\
+          <tr>\
+            <td>6:00pm</td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='90'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='91'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='92'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='93'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='94'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='95'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+            <td> <form action=\"check\" method=\"get\">\
+              <input type='hidden' name='id' value='96'>\
+              <input type='checkbox' %s onchange='this.form.submit()'>\
+            </form> </td>\
+          </tr>\
+        </tbody>\
+      </table>\
+    </body>\
+  </html>";
 
   // Serial.println(strlen(html));
   snprintf(temp, html_size, html, checked[0][0], checked[0][1], checked[0][2], checked[0][3], checked[0][4], checked[0][5], checked[0][6],
-                                  checked[1][0], checked[1][1], checked[1][2], checked[1][3], checked[1][4], checked[1][5], checked[1][6]);
+                                  checked[1][0], checked[1][1], checked[1][2], checked[1][3], checked[1][4], checked[1][5], checked[1][6],
+                                  checked[2][0], checked[2][1], checked[2][2], checked[2][3], checked[2][4], checked[2][5], checked[2][6],
+                                  checked[3][0], checked[3][1], checked[3][2], checked[3][3], checked[3][4], checked[3][5], checked[3][6],
+                                  checked[4][0], checked[4][1], checked[4][2], checked[4][3], checked[4][4], checked[4][5], checked[4][6],
+                                  checked[5][0], checked[5][1], checked[5][2], checked[5][3], checked[5][4], checked[5][5], checked[5][6],
+                                  checked[6][0], checked[6][1], checked[6][2], checked[6][3], checked[6][4], checked[6][5], checked[6][6],
+                                  checked[7][0], checked[7][1], checked[7][2], checked[7][3], checked[7][4], checked[7][5], checked[7][6],
+                                  checked[8][0], checked[8][1], checked[8][2], checked[8][3], checked[8][4], checked[8][5], checked[8][6],
+                                  checked[9][0], checked[9][1], checked[9][2], checked[9][3], checked[9][4], checked[9][5], checked[9][6]);
   server.send(200, "text/html", temp);
   // digitalWrite(led, 0);
+  free(temp);
 }
-
-// void handleRoot() {
-//   // digitalWrite(led, 1);
-//   int sec = millis() / 1000;
-//   int min = sec / 60;
-//   int hr = min / 60;
-
-//   int html_size = 1000000;
-//   char temp[html_size];
-//   const char *html = "<html>\
-//   <head>\
-//     <meta http-equiv='refresh' content='5'/>\
-//     <title>ESP32 Demo</title>\
-//     <style>\
-//       body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
-//       textarea { resize: none; }\
-//       table { border-collapse: collapse; }\
-//       table, th, td { border: 1px solid black; }\
-//       th, td { padding: 10px; }\
-//     </style>\
-//     <script>\
-//     function toggleCheckmark() {\
-//       var checkbox = document.getElementById(\"myCheckbox\");\
-//       checkbox.checked = !checkbox.checked; // Toggle the checked state\
-//     }\
-//     function handleCheckboxChange {\
-//       fetch('/check', {\
-//         method: 'GET',\
-//         headers: {\
-//             'Content-Type': 'text/plain'\
-//         }\
-//       })\
-//     }\
-//     </script>\
-//   </head>\
-//   <body>\
-//     <h1>Pet Feeder Menu</h1>\
-//     <a href='http://172.20.10.8/'> Link to video stream! </a>\
-//     <p>Uptime: %02d:%02d:%02d</p>\
-//     <br><br>\
-//     <table>\
-//       <tbody>\
-//         <th></th>\
-//         <th>SUN</th>\
-//         <th>MON</th>\
-//         <th>TUE</th>\
-//         <th>WED</th>\
-//         <th>THU</th>\
-//         <th>FRI</th>\
-//         <th>SAT</th>\
-//         <tr>\
-//           <td>9:00am</td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='00'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='01'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='02'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='03'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='04'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='05'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='06'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//         </tr>\
-//         <tr>\
-//             <td>10:00am</td>\
-//             <td> <form action=\"check\" method=\"get\">\
-//               <input type='hidden' name='id' value='10'>\
-//               <input type='checkbox' %s onchange='this.form.submit()'>\
-//             </form> </td>\
-//             <td> <form action=\"check\" method=\"get\">\
-//               <input type='hidden' name='id' value='11'>\
-//               <input type='checkbox' %s onchange='this.form.submit()'>\
-//             </form> </td>\
-//             <td> <form action=\"check\" method=\"get\">\
-//               <input type='hidden' name='id' value='12'>\
-//               <input type='checkbox' %s onchange='this.form.submit()'>\
-//             </form> </td>\
-//             <td> <form action=\"check\" method=\"get\">\
-//               <input type='hidden' name='id' value='13'>\
-//               <input type='checkbox' %s onchange='this.form.submit()'>\
-//             </form> </td>\
-//             <td> <form action=\"check\" method=\"get\">\
-//               <input type='hidden' name='id' value='14'>\
-//               <input type='checkbox' %s onchange='this.form.submit()'>\
-//             </form> </td>\
-//             <td> <form action=\"check\" method=\"get\">\
-//               <input type='hidden' name='id' value='15'>\
-//               <input type='checkbox' %s onchange='this.form.submit()'>\
-//             </form> </td>\
-//             <td> <form action=\"check\" method=\"get\">\
-//               <input type='hidden' name='id' value='16'>\
-//               <input type='checkbox' %s onchange='this.form.submit()'>\
-//             </form> </td>\
-//         </tr>\
-//         <tr>\
-//           <td>11:00am</td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='20'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='21'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='22'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='23'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='24'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='25'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='26'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//         </tr>\
-//         <tr>\
-//           <td>12:00pm</td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='30'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='31'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='32'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='33'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='34'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='35'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='36'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//         </tr>\
-//         <tr>\
-//           <td>1:00pm</td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='40'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='41'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='42'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='43'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='44'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='45'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='46'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//         </tr>\
-//         <tr>\
-//           <td>2:00pm</td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='50'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='51'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='52'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='53'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='54'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='55'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='56'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//         </tr>\
-//         <tr>\
-//           <td>3:00pm</td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='60'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='61'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='62'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='63'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='64'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='65'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='66'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//         </tr>\
-//         <tr>\
-//           <td>4:00pm</td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='70'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='71'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='72'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='73'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='74'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='75'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='76'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//         </tr>\
-//         <tr>\
-//           <td>5:00pm</td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='80'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='81'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='82'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='83'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='84'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='85'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='86'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//         </tr>\
-//         <tr>\
-//           <td>6:00pm</td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='90'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='91'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='92'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='93'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='94'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='95'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//           <td> <form action=\"check\" method=\"get\">\
-//             <input type='hidden' name='id' value='96'>\
-//             <input type='checkbox' %s onchange='this.form.submit()'>\
-//           </form> </td>\
-//         </tr>\
-//       </tbody>\
-//   </table>\
-//   </body>\
-// </html>";
-
-//   // Serial.println(strlen(html));
-//   snprintf(temp, html_size, html, hr, min % 60, sec % 60, checked[0][0], checked[0][1], checked[0][2], checked[0][3], checked[0][4], checked[0][5], checked[0][6], 
-//                                                           checked[1][0], checked[1][1], checked[1][2], checked[1][3], checked[1][4], checked[1][5], checked[1][6],
-//                                                           checked[2][0], checked[2][1], checked[2][2], checked[2][3], checked[2][4], checked[2][5], checked[2][6],
-//                                                           checked[3][0], checked[3][1], checked[3][2], checked[3][3], checked[3][4], checked[3][5], checked[3][6],
-//                                                           checked[4][0], checked[4][1], checked[4][2], checked[4][3], checked[4][4], checked[4][5], checked[4][6],
-//                                                           checked[5][0], checked[5][1], checked[5][2], checked[5][3], checked[5][4], checked[5][5], checked[5][6],
-//                                                           checked[6][0], checked[6][1], checked[6][2], checked[6][3], checked[6][4], checked[6][5], checked[6][6],
-//                                                           checked[7][0], checked[7][1], checked[7][2], checked[7][3], checked[7][4], checked[7][5], checked[7][6],
-//                                                           checked[8][0], checked[8][1], checked[8][2], checked[8][3], checked[8][4], checked[8][5], checked[8][6],
-//                                                           checked[9][0], checked[9][1], checked[9][2], checked[9][3], checked[9][4], checked[9][5], checked[9][6]);
-//   server.send(200, "text/html", temp);
-//   // digitalWrite(led, 0);
-// }
 
 void handleCheck() {
   String id = server.arg("id");
