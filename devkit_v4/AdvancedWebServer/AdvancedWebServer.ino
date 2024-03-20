@@ -146,9 +146,23 @@
 #include <WebServer.h>
 #include <ESPmDNS.h>
 #include <set>
+#include "time.h"
 
 const char *ssid = "gern";
 const char *password = "glenpppp0";
+
+const char *ntpServer = "pool.ntp.org";
+const long gmtOffset_sec = -14400; // EST: GMT -04:00 (-14400 s)
+const int daylightOffset_sec = 0;
+struct tm timeinfo; // init time struct
+char timeWeekDay[10] = "";
+char timeHour[3] = "";
+char timeMinute[3] = "";
+char timeID[3] = "";
+int idDay = -1;
+int idHour = -1;
+
+#define LED_PIN 25
 
 WebServer server(80);
 
@@ -196,7 +210,7 @@ void handleRoot() {
           <th>FRI</th>\
           <th>SAT</th>\
           <tr>\
-            <td>9:00am</td>\
+            <td>9am</td>\
             <td> <form action=\"check\" method=\"get\">\
               <input type='hidden' name='id' value='00'>\
               <input type='checkbox' %s onchange='this.form.submit()'>\
@@ -227,7 +241,7 @@ void handleRoot() {
             </form> </td>\
           </tr>\
           <tr>\
-            <td>10:00am</td>\
+            <td>10am</td>\
             <td> <form action=\"check\" method=\"get\">\
               <input type='hidden' name='id' value='10'>\
               <input type='checkbox' %s onchange='this.form.submit()'>\
@@ -258,7 +272,7 @@ void handleRoot() {
             </form> </td>\
           </tr>\
           <tr>\
-            <td>11:00am</td>\
+            <td>11am</td>\
             <td> <form action=\"check\" method=\"get\">\
               <input type='hidden' name='id' value='20'>\
               <input type='checkbox' %s onchange='this.form.submit()'>\
@@ -289,7 +303,7 @@ void handleRoot() {
             </form> </td>\
           </tr>\
           <tr>\
-            <td>12:00pm</td>\
+            <td>12pm</td>\
             <td> <form action=\"check\" method=\"get\">\
               <input type='hidden' name='id' value='30'>\
               <input type='checkbox' %s onchange='this.form.submit()'>\
@@ -320,7 +334,7 @@ void handleRoot() {
             </form> </td>\
           </tr>\
           <tr>\
-            <td>1:00pm</td>\
+            <td>1pm</td>\
             <td> <form action=\"check\" method=\"get\">\
               <input type='hidden' name='id' value='40'>\
               <input type='checkbox' %s onchange='this.form.submit()'>\
@@ -351,7 +365,7 @@ void handleRoot() {
             </form> </td>\
           </tr>\
           <tr>\
-            <td>2:00pm</td>\
+            <td>2pm</td>\
             <td> <form action=\"check\" method=\"get\">\
               <input type='hidden' name='id' value='50'>\
               <input type='checkbox' %s onchange='this.form.submit()'>\
@@ -382,7 +396,7 @@ void handleRoot() {
             </form> </td>\
           </tr>\
           <tr>\
-            <td>3:00pm</td>\
+            <td>3pm</td>\
             <td> <form action=\"check\" method=\"get\">\
               <input type='hidden' name='id' value='60'>\
               <input type='checkbox' %s onchange='this.form.submit()'>\
@@ -413,7 +427,7 @@ void handleRoot() {
             </form> </td>\
           </tr>\
           <tr>\
-            <td>4:00pm</td>\
+            <td>4pm</td>\
             <td> <form action=\"check\" method=\"get\">\
               <input type='hidden' name='id' value='70'>\
               <input type='checkbox' %s onchange='this.form.submit()'>\
@@ -444,7 +458,7 @@ void handleRoot() {
             </form> </td>\
           </tr>\
           <tr>\
-            <td>5:00pm</td>\
+            <td>5pm</td>\
             <td> <form action=\"check\" method=\"get\">\
               <input type='hidden' name='id' value='80'>\
               <input type='checkbox' %s onchange='this.form.submit()'>\
@@ -475,7 +489,7 @@ void handleRoot() {
             </form> </td>\
           </tr>\
           <tr>\
-            <td>6:00pm</td>\
+            <td>6pm</td>\
             <td> <form action=\"check\" method=\"get\">\
               <input type='hidden' name='id' value='90'>\
               <input type='checkbox' %s onchange='this.form.submit()'>\
@@ -538,21 +552,6 @@ void handleCheck() {
   Serial.print(" Col: ");
   Serial.println(col);
   checked[row][col] == "" ? checked[row][col] = "checked" : checked[row][col] = "";
-  // if (id == "00") {
-  //   checked[0][0] == "" ? checked[0][0] = "checked" : checked[0][0] = "";
-  // } else if (id == "01") {
-  //   checked[0][1] == "" ? checked[0][1] = "checked" : checked[0][1] = "";
-  // } else if (id == "02") {
-  //   checked[0][2] == "" ? checked[0][2] = "checked" : checked[0][2] = "";
-  // } else if (id == "03") {
-  //   checked[0][3] == "" ? checked[0][3] = "checked" : checked[0][3] = "";
-  // } else if (id == "04") {
-  //   checked[0][4] == "" ? checked[0][4] = "checked" : checked[0][4] = "";
-  // } else if (id == "05") {
-  //   checked[0][5] == "" ? checked[0][5] = "checked" : checked[0][5] = "";
-  // } else if (id == "06") {
-  //   checked[0][6] == "" ? checked[0][6] = "checked" : checked[0][6] = "";
-  // }
 
   // update schedule set
   if (checked[row][col] == "checked") { // add to set
@@ -588,9 +587,98 @@ void handleNotFound() {
 
   server.send(404, "text/plain", message);
 }
+ 
+void getTime() {
+  // get local time
+  getLocalTime(&timeinfo);
+
+  // store time info
+  strftime(timeWeekDay,10, "%A", &timeinfo); // day
+  strftime(timeHour,3, "%H", &timeinfo); // hour
+  // strftime(timeMinute,3, "%M", &timeinfo); // minute
+
+  if (strcmp(timeWeekDay, "Sunday") == 0) {
+    idDay = 0;
+  } else if (strcmp(timeWeekDay, "Monday") == 0) {
+    idDay = 1;
+  } else if (strcmp(timeWeekDay, "Tuesday") == 0) {
+    idDay = 2;
+  } else if (strcmp(timeWeekDay, "Wednesday") == 0) {
+    idDay = 3;
+  } else if (strcmp(timeWeekDay, "Thurday") == 0) {
+    idDay = 4;
+  } else if (strcmp(timeWeekDay, "Friday") == 0) {
+    idDay = 5;
+  } else {
+    idDay = 6;
+  }
+
+  // Serial.print("timeHour: ");
+  // Serial.println(timeHour);
+  if (strcmp(timeHour, "09") == 0) {
+    idHour = 0;
+  } else if (strcmp(timeHour, "10") == 0) {
+    idHour = 1;
+  } else if (strcmp(timeHour, "11") == 0) {
+    idHour = 2;
+  } else if (strcmp(timeHour, "12") == 0) {
+    idHour = 3;
+  } else if (strcmp(timeHour, "13") == 0) {
+    idHour = 4;
+  } else if (strcmp(timeHour, "14") == 0) {
+    idHour = 5;
+  } else if (strcmp(timeHour, "15") == 0) {
+    idHour = 6;
+  } else if (strcmp(timeHour, "16") == 0) {
+    idHour = 7;
+  } else if (strcmp(timeHour, "17") == 0) {
+    idHour = 8;
+  } else if (strcmp(timeHour, "18") == 0) {
+    idHour = 9;
+  } else {
+    idHour = -1;
+  }
+  
+  // print id from time
+  // Serial.print("idHour idDay: ");
+  // Serial.print(idHour);
+  // Serial.print(" ");
+  // Serial.println(idDay);
+  // Serial.println();
+
+  // print time
+  // Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+}
+
+void handleMotor() {
+  // update idHour and idDay
+  getTime();
+
+  char idFromTime[3];
+  idFromTime[0] = (char) idHour + '0';
+  idFromTime[1] = (char) idDay + '0';
+  idFromTime[2] = '\0';
+
+  if (schedule.count(idFromTime)) {
+    // flash LED (gpio pin)
+    digitalWrite(LED_PIN, HIGH); // Turn on LED
+    delay(1000);
+    digitalWrite(LED_PIN, LOW); // Turn off LED
+
+    // remove id from schedule
+    schedule.erase(idFromTime);
+    checked[idHour][idDay] = ""; // uncheck box
+  }
+}
+
+
 
 void setup(void) {
   init_checked();
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+
+  pinMode(LED_PIN, OUTPUT); // Set the pin as output
+  digitalWrite(LED_PIN, LOW); // Turn off LED
 
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
@@ -625,7 +713,12 @@ void setup(void) {
   Serial.println("HTTP server started");
 }
 
+
+
 void loop(void) {
   server.handleClient();
-  delay(2);  // allow the cpu to switch to other tasks
+  if (!schedule.empty()) {
+    handleMotor();
+  }
+  delay(500); // allow the cpu to switch to other tasks
 }
