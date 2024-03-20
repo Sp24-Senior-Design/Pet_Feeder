@@ -152,7 +152,6 @@ const char *password = "glenpppp0";
 
 WebServer server(80);
 
-// const int led = 13;
 using namespace std;
 set<String> schedule;
 
@@ -168,11 +167,6 @@ void init_checked() {
 
 
 void handleRoot() {
-  // digitalWrite(led, 1);
-  // int sec = millis() / 1000;
-  // int min = sec / 60;
-  // int hr = min / 60;
-
   int html_size = 2000 * 10;
   char *temp = (char *) malloc(sizeof(*temp) * html_size);
   const char *html = "\
@@ -528,7 +522,6 @@ void handleRoot() {
                                   checked[8][0], checked[8][1], checked[8][2], checked[8][3], checked[8][4], checked[8][5], checked[8][6],
                                   checked[9][0], checked[9][1], checked[9][2], checked[9][3], checked[9][4], checked[9][5], checked[9][6]);
   server.send(200, "text/html", temp);
-  // digitalWrite(led, 0);
   free(temp);
 }
 
@@ -580,7 +573,6 @@ void handleCheck() {
 }
 
 void handleNotFound() {
-  // digitalWrite(led, 1);
   String message = "File Not Found\n\n";
   message += "URI: ";
   message += server.uri();
@@ -595,13 +587,11 @@ void handleNotFound() {
   }
 
   server.send(404, "text/plain", message);
-  // digitalWrite(led, 0);
 }
 
 void setup(void) {
   init_checked();
-  // pinMode(led, OUTPUT);
-  // digitalWrite(led, 0);
+
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
@@ -625,12 +615,7 @@ void setup(void) {
 
   // initialize handlers
   server.on("/", handleRoot);
-  // server.on("/getmonth", handleGetMonth);  // for get month
-  // server.on("/getday", handleGetDay);  // for get day
-  // server.on("/gethour", handleGetHour);  // for get hour
-  // server.on("/getminute", handleGetMinute);  // for get minute
   server.on("/check", handleCheck);  // for toggling checkmarks
-  // server.on("/test.svg", drawGraph); // disable graph
   server.on("/inline", []() {
     server.send(200, "text/plain", "this works as well");
   });
@@ -642,5 +627,5 @@ void setup(void) {
 
 void loop(void) {
   server.handleClient();
-  delay(2);  //allow the cpu to switch to other tasks
+  delay(2);  // allow the cpu to switch to other tasks
 }
