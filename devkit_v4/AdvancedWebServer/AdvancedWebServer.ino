@@ -169,15 +169,14 @@ void init_checked() {
 
 void handleRoot() {
   // digitalWrite(led, 1);
-  int sec = millis() / 1000;
-  int min = sec / 60;
-  int hr = min / 60;
+  // int sec = millis() / 1000;
+  // int min = sec / 60;
+  // int hr = min / 60;
 
-  int html_size = 6000;
+  int html_size = 3000 * 2;
   char temp[html_size];
   const char *html = "<html>\
   <head>\
-    <meta http-equiv='refresh' content='5'/>\
     <title>ESP32 Demo</title>\
     <style>\
       body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
@@ -186,25 +185,10 @@ void handleRoot() {
       table, th, td { border: 1px solid black; }\
       th, td { padding: 10px; }\
     </style>\
-    <script>\
-    function toggleCheckmark() {\
-      var checkbox = document.getElementById(\"myCheckbox\");\
-      checkbox.checked = !checkbox.checked; // Toggle the checked state\
-    }\
-    function handleCheckboxChange {\
-      fetch('/check', {\
-        method: 'GET',\
-        headers: {\
-            'Content-Type': 'text/plain'\
-        }\
-      })\
-    }\
-    </script>\
   </head>\
   <body>\
     <h1>Pet Feeder Menu</h1>\
     <a href='http://172.20.10.8/'> Link to video stream! </a>\
-    <p>Uptime: %02d:%02d:%02d</p>\
     <br><br>\
     <table>\
       <tbody>\
@@ -284,8 +268,8 @@ void handleRoot() {
 </html>";
 
   // Serial.println(strlen(html));
-  snprintf(temp, html_size, html, hr, min % 60, sec % 60, checked[0][0], checked[0][1], checked[0][2], checked[0][3], checked[0][4], checked[0][5], checked[0][6],
-                                                          checked[1][0], checked[1][1], checked[1][2], checked[1][3], checked[1][4], checked[1][5], checked[1][6]);
+  snprintf(temp, html_size, html, checked[0][0], checked[0][1], checked[0][2], checked[0][3], checked[0][4], checked[0][5], checked[0][6],
+                                  checked[1][0], checked[1][1], checked[1][2], checked[1][3], checked[1][4], checked[1][5], checked[1][6]);
   server.send(200, "text/html", temp);
   // digitalWrite(led, 0);
 }
@@ -704,11 +688,12 @@ void handleCheck() {
   } else { // remove from set
     schedule.erase(id);
   }
-  Serial.print("Schedule set: ");
+  Serial.print("Schedule set: (");
   for (auto i : schedule) {
-    Serial.println(i);
+    Serial.print(i);
+    Serial.print(" ");
   }
-  Serial.println();
+  Serial.println(")\n");
 
   // goes back to root web page
   server.sendHeader("Location", "/", true);  // Set the "Location" header to root URL
