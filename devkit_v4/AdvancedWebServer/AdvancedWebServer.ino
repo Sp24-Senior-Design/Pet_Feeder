@@ -162,7 +162,7 @@ char timeID[3] = "";
 int idDay = -1;
 int idHour = -1;
 
-#define LED_PIN 25
+#define LED_PIN 4
 
 WebServer server(80);
 
@@ -605,7 +605,7 @@ void getTime() {
     idDay = 2;
   } else if (strcmp(timeWeekDay, "Wednesday") == 0) {
     idDay = 3;
-  } else if (strcmp(timeWeekDay, "Thurday") == 0) {
+  } else if (strcmp(timeWeekDay, "Thursday") == 0) {
     idDay = 4;
   } else if (strcmp(timeWeekDay, "Friday") == 0) {
     idDay = 5;
@@ -640,11 +640,11 @@ void getTime() {
   }
   
   // print id from time
-  // Serial.print("idHour idDay: ");
-  // Serial.print(idHour);
-  // Serial.print(" ");
-  // Serial.println(idDay);
-  // Serial.println();
+  Serial.print("idHour idDay: ");
+  Serial.print(idHour);
+  Serial.print(" ");
+  Serial.println(idDay);
+  Serial.println();
 
   // print time
   // Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
@@ -720,5 +720,5 @@ void loop(void) {
   if (!schedule.empty()) {
     handleMotor();
   }
-  delay(500); // allow the cpu to switch to other tasks
+  delay(100); // allow the cpu to switch to other tasks
 }
