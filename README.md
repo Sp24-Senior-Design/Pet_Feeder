@@ -30,3 +30,18 @@ Our stretch functionalities include:<br>
 	<ol>
     <li>Stretch PSDR #1 (Hardware): An ability to interface an infrared distance sensor with the ESP32 using I2C to measure the amount of food in the food reserve.</li>
   </ol>
+
+<h2>Code:</h2>
+Web server code for ESP32 on PCB:<br>
+<ul>
+  <li>devkitv4/AdvancedWebServer/AdvancedWebServer.ino
+</ul>
+Web server code for ESP32-CAM development board:<br>
+<ul>
+  <li>camera/CameraWebServer/CameraWebServer.ino (programmed onto MCU)
+  <li>camera/CameraWebServer/app_http.cpp (web server back-end)
+  <li>camera/CameraWebServer/camera_index.h (web server front-end)
+  <li>camera/CameraWebServer/camera_pins.h (configurable pins)
+</ul>
+<br>
+We used C/C++-based Arduino IDE to develop software/firmware and program the microcontroller.
