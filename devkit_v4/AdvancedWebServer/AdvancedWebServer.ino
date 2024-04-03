@@ -238,7 +238,8 @@ void handleRoot() {
       <a href='http://172.20.10.8/'> Link to video stream! </a>\
       <br><br>\
       Weight of food in bowl: %f grams.\
-      Distance of food in container: %d cm.\
+      <br>\
+      Distance of empty space in food container: %d cm.\
       <br><br>\
       <table>\
         <tbody>\
