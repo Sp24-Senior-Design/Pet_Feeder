@@ -773,7 +773,7 @@ void handleIR()
 
 void setup(void) {
   init_checked();
-  // init_scale();
+  init_scale();
   init_motor();
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
 
@@ -824,7 +824,7 @@ void loop(void) {
     handleMotor();
   }
   if (i % 10 == 0) { // 10 * ~100 ms delay
-    // handleScale();
+    handleScale();
     handleIR();
   }
   
