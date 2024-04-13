@@ -32,11 +32,11 @@ Our stretch functionalities include:<br>
   </ol>
 
 <h2>Code:</h2>
-Web server code for ESP32 on PCB:<br>
+Code for ESP32 on PCB (handles web server, motor, IR sensor, and load cell):<br>
 <ul>
-  <li>devkitv4/AdvancedWebServer/AdvancedWebServer.ino
+  <li>pcb_web_server_final/src/main.c
 </ul>
-Web server code for ESP32-CAM development board:<br>
+Code for ESP32-CAM development board (handles another web server and camera):<br>
 <ul>
   <li>camera/CameraWebServer/CameraWebServer.ino (programmed onto MCU)
   <li>camera/CameraWebServer/app_http.cpp (web server back-end)
@@ -44,4 +44,5 @@ Web server code for ESP32-CAM development board:<br>
   <li>camera/CameraWebServer/camera_pins.h (configurable pins)
 </ul>
 <br>
-We used C/C++-based Arduino IDE to develop software/firmware and program the microcontroller.
+We started with C/C++-based Arduino IDE to develop and prototype software/firmware and program the microcontroller.<br>
+We ported the program for the ESP32 on PCB to the PlatiformIO IDE using the ESP-IDF framework to decrease overhead from Arduino's framework.
