@@ -2,11 +2,11 @@
   Project website hosting project journals, documentation, media, and misc.: <a href="https://engineering.purdue.edu/477grp3" target="_blank">https://engineering.purdue.edu/477grp3</a>
 			
 <h2>Project Description:</h2> 
-  Our project will be a Smart Pet Feeder, with the purpose of helping pet owners who can't always be home to interact with or feed their pet (or maybe just forgetful owners). 
-	Our device will be programmed by the user through a simple LAN web server, allowing the programming of motors to control the amount of food released and also when it is released. 
-	There will also be a weight sensor to monitor the food level in the food bowl. 
+  Our project is the Smart Pet Feeder, with the purpose of helping pet owners who can't always be home to interact with or feed their pet (or maybe just forgetful owners). 
+	Our device is programmed by the user through a simple LAN web server, allowing the programming of motors to control the amount of food released and also when it is released. 
+	There is also a weight sensor to monitor the food level in the food bowl. 
 	Our feeder also allows the owner to use one-way video to monitor their pet from a distance. 
-	The video will be streamed from a camera onto the web page in real-time over Wi-Fi. 
+	This video is streamed from a camera onto the web page in real-time over Wi-Fi. 
 	In regards to power, our product will be safely powered by using a wall outlet and a voltage regulator to step down the voltage such that all of our peripherals can be powered correctly. 
 	As a result, our product will make pet care more convenient for owners with our product.
 <br><br>
